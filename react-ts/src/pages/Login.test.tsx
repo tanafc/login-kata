@@ -6,21 +6,16 @@ import { TokenRepository } from "../types/TokenRepository";
 
 describe("Login", () => {
   const navigateSpy = vi.fn();
-  const tokenRepositorySpy: TokenRepository =  {
-    save: vi.fn()
-  }
+  const tokenRepositorySpy: TokenRepository = {
+    save: vi.fn(),
+  };
 
   it("redirects to recipe page after login", async () => {
-
-    const user = userEvent.setup();
-    render(<Login navigate={navigateSpy} tokenRepository={tokenRepositorySpy}/>);
-
-    await user.type(
-      screen.getByLabelText("Your email"),
-      "linustorvalds@gmail.com"
+    render(
+      <Login navigate={navigateSpy} tokenRepository={tokenRepositorySpy} />
     );
-    await user.type(screen.getByLabelText("Your password"), "ilovecats");
-    await user.click(screen.getByRole("button", { name: "Login" }));
+
+    await fillOutAndSubmit();
 
     await waitFor(
       () => {
@@ -30,9 +25,18 @@ describe("Login", () => {
     );
   });
 
-  it('stores token when user logs in', async () => {
+  it("stores token when user logs in", async () => {
+    render(
+      <Login navigate={navigateSpy} tokenRepository={tokenRepositorySpy} />
+    );
+
+    await fillOutAndSubmit();
+
+    expect(tokenRepositorySpy.save).toHaveBeenCalled();
+  });
+
+  async function fillOutAndSubmit() {
     const user = userEvent.setup();
-    render(<Login navigate={navigateSpy} tokenRepository={tokenRepositorySpy}/>);
 
     await user.type(
       screen.getByLabelText("Your email"),
@@ -40,7 +44,5 @@ describe("Login", () => {
     );
     await user.type(screen.getByLabelText("Your password"), "ilovecats");
     await user.click(screen.getByRole("button", { name: "Login" }));
-    expect(tokenRepositorySpy.save).toHaveBeenCalled()
-    
-  });
+  }
 });
