@@ -5,12 +5,14 @@ import { PasswordField } from "../components/PasswordField.js";
 import { Title } from "../components/Title.js";
 import { Button } from "../components/Button.js";
 import { translateError } from "../utils/translateError.js";
+import { TokenRepository } from "../types/TokenRepository.js";
 
 type LoginProps = {
   navigate: (path: string) => void;
+  tokenRepository: TokenRepository
 };
 
-export const Login = ({ navigate }: LoginProps) => {
+export const Login = ({ navigate, tokenRepository }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
@@ -44,7 +46,7 @@ export const Login = ({ navigate }: LoginProps) => {
               return data.payload;
             })
             .then((payload) => {
-              localStorage.setItem("token", payload.jwt);
+              tokenRepository.save(payload.jwt);
             })
             .then(() => {
               navigate("/recipes");
