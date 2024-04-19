@@ -5,10 +5,12 @@ import { PasswordField } from "../components/PasswordField.js";
 import { Title } from "../components/Title.js";
 import { Button } from "../components/Button.js";
 import { translateError } from "../utils/translateError.js";
-import { useNavigate } from "react-router-dom";
 
-export const Login = () => {
-  const navigate = useNavigate();
+type LoginProps = {
+  navigate: (path: string) => void;
+};
+
+export const Login = ({ navigate }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
