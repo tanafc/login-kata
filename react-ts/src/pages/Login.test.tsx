@@ -6,6 +6,7 @@ import { TokenRepository } from "../domain/TokenRepository";
 import { Router } from "../domain/Router";
 import { Auth } from "../domain/Auth";
 import { AuthService } from "../infrastructure/AuthService";
+import { LoginUseCase } from "../use-cases/LoginUseCase";
 
 describe("Login", () => {
   const router: Router = {
@@ -18,11 +19,11 @@ describe("Login", () => {
   const authService: Auth = {
     login: async () => "token" ,
   };
-  
+  const loginUseCase = new LoginUseCase(router, tokenRepository, authService);
 
   it("redirects to recipe page after login", async () => {
     render(
-      <Login router={router} tokenRepository={tokenRepository} authService={authService}/>
+      <Login loginUseCase={loginUseCase}/>
     );
 
     await fillOutAndSubmit();
@@ -36,7 +37,7 @@ describe("Login", () => {
 
   it("stores token when user logs in", async () => {
     render(
-      <Login router={router} tokenRepository={tokenRepository} authService={authService}/>
+      <Login loginUseCase={loginUseCase}/>
     );
 
     await fillOutAndSubmit();
