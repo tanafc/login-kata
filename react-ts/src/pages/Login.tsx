@@ -3,15 +3,13 @@ import { Button } from "../components/Button.js";
 import { EmailField } from "../components/EmailField.js";
 import { PasswordField } from "../components/PasswordField.js";
 import { Title } from "../components/Title.js";
-import { LoginUseCase } from "../use-cases/LoginUseCase.js";
+import { useDependencies } from "../infrastructure/dependencies.js";
 import { translateError } from "../utils/translateError.js";
 import "./Login.css";
 
-type LoginProps = {
-  loginUseCase: LoginUseCase
-};
 
-export const Login = ({ loginUseCase }: LoginProps) => {
+export const Login = () => {
+  const {loginUseCase} = useDependencies()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);

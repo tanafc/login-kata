@@ -6,6 +6,7 @@ import { AuthService } from "../infrastructure/AuthService";
 import { RouterReactRouter } from "../infrastructure/RouterReactRouter";
 import { Auth } from "../domain/Auth";
 import { LoginUseCase } from "../use-cases/LoginUseCase";
+import { DependenciesContext } from "../infrastructure/dependencies";
 
 export const AppRoutes = () => {
   const router = new RouterReactRouter();
@@ -13,14 +14,18 @@ export const AppRoutes = () => {
   const authService: Auth = new AuthService();
 
   const loginUseCase = new LoginUseCase(router, tokenRepositoryLocalStorage, authService);
+
+  const dependencies = {loginUseCase}
   
   return (
-    <Routes>
-      <Route path="/" element={
-      <Login loginUseCase={loginUseCase}/>
-      } 
-      />
-      <Route path="/recipes" element={<Recipes />} />
-    </Routes>
+    <DependenciesContext.Provider value={dependencies}>
+      <Routes>
+        <Route path="/" element={
+          <Login />
+        } 
+        />
+        <Route path="/recipes" element={<Recipes />} />
+      </Routes>
+    </DependenciesContext.Provider>
   );
 };

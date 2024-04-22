@@ -7,6 +7,7 @@ import { Router } from "../domain/Router";
 import { Auth } from "../domain/Auth";
 import { AuthService } from "../infrastructure/AuthService";
 import { LoginUseCase } from "../use-cases/LoginUseCase";
+import { DependenciesContext } from "../infrastructure/dependencies";
 
 describe("Login", () => {
   const router: Router = {
@@ -23,7 +24,9 @@ describe("Login", () => {
 
   it("redirects to recipe page after login", async () => {
     render(
-      <Login loginUseCase={loginUseCase}/>
+      <DependenciesContext.Provider value={{ loginUseCase }}>
+        <Login />
+      </DependenciesContext.Provider>
     );
 
     await fillOutAndSubmit();
@@ -37,7 +40,9 @@ describe("Login", () => {
 
   it("stores token when user logs in", async () => {
     render(
-      <Login loginUseCase={loginUseCase}/>
+      <DependenciesContext.Provider value={{ loginUseCase }}>
+        <Login />
+      </DependenciesContext.Provider>
     );
 
     await fillOutAndSubmit();
