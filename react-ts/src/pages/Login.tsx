@@ -5,14 +5,17 @@ import { PasswordField } from "../components/PasswordField.js";
 import { Title } from "../components/Title.js";
 import { Button } from "../components/Button.js";
 import { translateError } from "../utils/translateError.js";
-import { TokenRepository } from "../types/TokenRepository.js";
+import { TokenRepository } from "../domain/TokenRepository.js";
+import { Router } from "../domain/Router.js";
+import { Auth } from "../domain/Auth.js";
 
 type LoginProps = {
-  navigate: (path: string) => void;
+  router: Router;
   tokenRepository: TokenRepository
+  authService: Auth
 };
 
-export const Login = ({ navigate, tokenRepository }: LoginProps) => {
+export const Login = ({ router, tokenRepository, authService }: LoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
@@ -31,25 +34,12 @@ export const Login = ({ navigate, tokenRepository }: LoginProps) => {
           setIsLoading(true);
           setErrorMessage(null);
 
-          fetch("https://backend-login-placeholder.deno.dev/api/users/login", {
-            method: "POST",
-            body: JSON.stringify({ email, password }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.status === "error") {
-                throw new Error(data.code);
-              }
-              return data.payload;
-            })
-            .then((payload) => {
-              tokenRepository.save(payload.jwt);
+          authService.login(email, password)
+            .then((jwt) => {
+              tokenRepository.save(jwt);
             })
             .then(() => {
-              navigate("/recipes");
+              router.goToRecipes()
             })
             .catch((error) => {
               setErrorMessage(error.message);

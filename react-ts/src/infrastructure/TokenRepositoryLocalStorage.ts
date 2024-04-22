@@ -1,4 +1,4 @@
-import { TokenRepository } from "../types/TokenRepository.js";
+import { TokenRepository } from "../domain/TokenRepository.js";
 
 export class TokenRepositoryLocalStorage implements TokenRepository {
   save(token: string): void {
