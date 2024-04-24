@@ -3,7 +3,7 @@ import { Title } from "../components/Title";
 import { RecipeCard } from "../components/RecipeCard";
 import "./Recipes.css";
 
-type Recipe = {
+export type Recipe = {
   id: string;
   name: string;
   ingredients: string[];
