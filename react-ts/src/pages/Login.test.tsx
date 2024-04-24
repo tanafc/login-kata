@@ -1,13 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
-import { Login } from "./Login";
 import userEvent from "@testing-library/user-event";
-import { TokenRepository } from "../domain/TokenRepository";
-import { Router } from "../domain/Router";
+import { describe, expect, it, vi } from "vitest";
 import { Auth } from "../domain/Auth";
-import { AuthService } from "../infrastructure/AuthService";
-import { LoginUseCase } from "../use-cases/LoginUseCase";
+import { Router } from "../domain/Router";
+import { TokenRepository } from "../domain/TokenRepository";
 import { ContainerContext } from "../infrastructure/container";
+import { LoginUseCase } from "../use-cases/LoginUseCase";
+import { Login } from "./Login";
 
 describe("Login", () => {
   const router: Router = {

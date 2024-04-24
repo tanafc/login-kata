@@ -27,7 +27,6 @@ export const AppRoutes = () => {
     container.bind(Tokens.AUTH).toDynamicValue(() => new AuthService());
     container.bind(Tokens.LOGIN_USE_CASE).toDynamicValue(({ container }) => {
       const router = container.get<Router>(Tokens.ROUTER);
-      console.log("router");
       const authService = container.get<Auth>(Tokens.AUTH);
       const tokenRepository = container.get<TokenRepository>(
         Tokens.TOKEN_REPOSITORY

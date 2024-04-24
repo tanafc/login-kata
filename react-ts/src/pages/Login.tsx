@@ -6,11 +6,9 @@ import { Title } from "../components/Title.js";
 import { useContainer } from "../infrastructure/container.js";
 import { translateError } from "../utils/translateError.js";
 import "./Login.css";
-import { LoginUseCase } from "../use-cases/LoginUseCase.js";
-import { Tokens } from "../tokens.js";
 
 export const Login = () => {
-  const container = useContainer();
+  const { login } = useContainer();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
@@ -29,9 +27,7 @@ export const Login = () => {
           setIsLoading(true);
           setErrorMessage(null);
 
-          container
-            .get<LoginUseCase>(Tokens.LOGIN_USE_CASE)
-            .execute(email, password)
+          login(email, password)
             .catch((error) => {
               setErrorMessage(error.message);
             })
