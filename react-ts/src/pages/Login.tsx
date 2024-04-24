@@ -3,13 +3,14 @@ import { Button } from "../components/Button.js";
 import { EmailField } from "../components/EmailField.js";
 import { PasswordField } from "../components/PasswordField.js";
 import { Title } from "../components/Title.js";
-import { useDependencies } from "../infrastructure/dependencies.js";
+import { useContainer } from "../infrastructure/container.js";
 import { translateError } from "../utils/translateError.js";
 import "./Login.css";
-
+import { LoginUseCase } from "../use-cases/LoginUseCase.js";
+import { Tokens } from "../tokens.js";
 
 export const Login = () => {
-  const {loginUseCase} = useDependencies()
+  const container = useContainer();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
@@ -28,7 +29,9 @@ export const Login = () => {
           setIsLoading(true);
           setErrorMessage(null);
 
-          loginUseCase.execute(email, password)
+          container
+            .get<LoginUseCase>(Tokens.LOGIN_USE_CASE)
+            .execute(email, password)
             .catch((error) => {
               setErrorMessage(error.message);
             })

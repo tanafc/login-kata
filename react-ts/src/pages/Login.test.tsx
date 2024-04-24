@@ -7,42 +7,40 @@ import { Router } from "../domain/Router";
 import { Auth } from "../domain/Auth";
 import { AuthService } from "../infrastructure/AuthService";
 import { LoginUseCase } from "../use-cases/LoginUseCase";
-import { DependenciesContext } from "../infrastructure/dependencies";
+import { ContainerContext } from "../infrastructure/container";
 
 describe("Login", () => {
   const router: Router = {
     goToRecipes: vi.fn(),
-  }
+  };
   const tokenRepository: TokenRepository = {
     save: vi.fn(),
   };
 
   const authService: Auth = {
-    login: async () => "token" ,
+    login: async () => "token",
   };
   const loginUseCase = new LoginUseCase(router, tokenRepository, authService);
 
   it("redirects to recipe page after login", async () => {
     render(
-      <DependenciesContext.Provider value={{ loginUseCase }}>
+      <ContainerContext.Provider value={{ loginUseCase }}>
         <Login />
-      </DependenciesContext.Provider>
+      </ContainerContext.Provider>
     );
 
     await fillOutAndSubmit();
 
-    await waitFor(
-      () => {
-        expect(router.goToRecipes).toHaveBeenCalled();
-      },
-    );
+    await waitFor(() => {
+      expect(router.goToRecipes).toHaveBeenCalled();
+    });
   });
 
   it("stores token when user logs in", async () => {
     render(
-      <DependenciesContext.Provider value={{ loginUseCase }}>
+      <ContainerContext.Provider value={{ loginUseCase }}>
         <Login />
-      </DependenciesContext.Provider>
+      </ContainerContext.Provider>
     );
 
     await fillOutAndSubmit();

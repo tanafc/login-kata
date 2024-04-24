@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Login } from "../pages/Login";
 import { Recipes } from "../pages/Recipes";
 import { TokenRepositoryLocalStorage } from "../infrastructure/TokenRepositoryLocalStorage";
@@ -6,26 +6,43 @@ import { AuthService } from "../infrastructure/AuthService";
 import { RouterReactRouter } from "../infrastructure/RouterReactRouter";
 import { Auth } from "../domain/Auth";
 import { LoginUseCase } from "../use-cases/LoginUseCase";
-import { DependenciesContext } from "../infrastructure/dependencies";
+import { ContainerContext } from "../infrastructure/container";
+import { Container } from "inversify";
+import { Tokens } from "../tokens";
+import { TokenRepository } from "../domain/TokenRepository";
+import { Router } from "../domain/Router";
+
+const container = new Container();
 
 export const AppRoutes = () => {
-  const router = new RouterReactRouter();
-  const tokenRepositoryLocalStorage = new TokenRepositoryLocalStorage();
-  const authService: Auth = new AuthService();
+  const navigate = useNavigate();
 
-  const loginUseCase = new LoginUseCase(router, tokenRepositoryLocalStorage, authService);
+  if (!container.isBound(Tokens.LOGIN_USE_CASE)) {
+    container
+      .bind(Tokens.TOKEN_REPOSITORY)
+      .toDynamicValue(() => new TokenRepositoryLocalStorage());
+    container
+      .bind(Tokens.ROUTER)
+      .toDynamicValue(() => new RouterReactRouter(navigate));
+    container.bind(Tokens.AUTH).toDynamicValue(() => new AuthService());
+    container.bind(Tokens.LOGIN_USE_CASE).toDynamicValue(({ container }) => {
+      const router = container.get<Router>(Tokens.ROUTER);
+      console.log("router");
+      const authService = container.get<Auth>(Tokens.AUTH);
+      const tokenRepository = container.get<TokenRepository>(
+        Tokens.TOKEN_REPOSITORY
+      );
 
-  const dependencies = {loginUseCase}
-  
+      return new LoginUseCase(router, tokenRepository, authService);
+    });
+  }
+
   return (
-    <DependenciesContext.Provider value={dependencies}>
+    <ContainerContext.Provider value={container}>
       <Routes>
-        <Route path="/" element={
-          <Login />
-        } 
-        />
+        <Route path="/" element={<Login />} />
         <Route path="/recipes" element={<Recipes />} />
       </Routes>
-    </DependenciesContext.Provider>
+    </ContainerContext.Provider>
   );
 };

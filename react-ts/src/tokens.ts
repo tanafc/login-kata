@@ -1,0 +1,6 @@
+export const enum Tokens {
+  AUTH = "AUTH",
+  ROUTER = "ROUTER",
+  TOKEN_REPOSITORY = "TOKEN_REPOSITORY",
+  LOGIN_USE_CASE = "LOGIN_USE_CASE",
+}

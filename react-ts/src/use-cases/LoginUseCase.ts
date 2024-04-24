@@ -3,15 +3,25 @@ import { Router } from "../domain/Router";
 import { TokenRepository } from "../domain/TokenRepository";
 
 export class LoginUseCase {
-  constructor(private router: Router, private tokenRepository: TokenRepository, private authService: Auth) {}
+  constructor(
+    private router: Router,
+    private tokenRepository: TokenRepository,
+    private authService: Auth
+  ) {}
 
   async execute(email: string, password: string): Promise<void> {
-    return this.authService.login(email, password)
+    console.log("execute usecase");
+    return this.authService
+      .login(email, password)
       .then((jwt) => {
+        console.log("saving jwt");
+
         this.tokenRepository.save(jwt);
       })
       .then(() => {
-        this.router.goToRecipes()
-    })
+        console.log("navigating");
+
+        this.router.goToRecipes();
+      });
   }
 }
